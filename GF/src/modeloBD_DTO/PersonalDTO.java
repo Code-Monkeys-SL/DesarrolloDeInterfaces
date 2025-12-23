@@ -6,19 +6,19 @@ public class PersonalDTO {
     private String apellidos;
     private String telefono;
     private String correo;
-    private String contraseña;
+    private String contrasenia;
     private boolean admin;
     private int idCategoria;
     
 	public PersonalDTO(int idPersonal, String nombre, String apellidos, String telefono, String correo,
-			String contraseña, boolean admin, int idCategoria) {
+			String contrasenia, boolean admin, int idCategoria) {
 		super();
 		this.idPersonal = idPersonal;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.telefono = telefono;
 		this.correo = correo;
-		this.contraseña = contraseña;
+		this.contrasenia = contrasenia;
 		this.admin = admin;
 		this.idCategoria = idCategoria;
 	}
@@ -63,12 +63,12 @@ public class PersonalDTO {
 		this.correo = correo;
 	}
 
-	public String getContraseña() {
-		return contraseña;
+	public String getContrasenia() {
+		return contrasenia;
 	}
 
-	public void setContraseña(String contraseña) {
-		this.contraseña = contraseña;
+	public void setContrasenia(String contrasenia) {
+		this.contrasenia = contrasenia;
 	}
 
 	public boolean isAdmin() {
