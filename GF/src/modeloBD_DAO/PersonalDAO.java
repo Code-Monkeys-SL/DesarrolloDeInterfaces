@@ -14,6 +14,7 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 	private static final String SQL_UPDATE = "UPDATE Personal SET nombre = ?, apellidos = ?, telefono = ?, correo = ?, contraseña = ?, admin = ?, id_categoria = ? WHERE id_personal = ?";
 	private static final String SQL_READ  = "SELECT * FROM Personal WHERE id_personal = ?";
 	private static final String SQL_READALL  = "SELECT * FROM Personal";
+	private static final String SQL_READLOGIN  = "SELECT * FROM Personal WHERE correo = ? AND contraseña = ?";
 	
 	private ConexionSGL conn = ConexionSGL.getInstancia();
 
@@ -127,4 +128,22 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 		return listaPer;
 	}
 
+	public PersonalDTO login(String mail, String pass) {
+		PersonalDTO Per = null;
+		try {
+			PreparedStatement ps = conn.getCon().prepareStatement(SQL_READLOGIN);
+			ps.setString(1, mail);
+			ps.setString(2, pass);
+			
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()==true) {
+				Per = new PersonalDTO(rs.getInt("id_personal"), rs.getString("nombre"), rs.getString("apellidos"), rs.getString("telefono"), rs.getString("correo"), rs.getString("contraseña"), rs.getBoolean("admin"), rs.getInt("id_categoria"));
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return Per;
+	}
 }
