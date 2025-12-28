@@ -1,15 +1,15 @@
 package modeloBD_DTO;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class FichajeDTO {
 	private int idFichaje;
     private String accion;
-    private Date fechaInicial;
-    private Date fechaFinal;
+    private Timestamp fechaInicial;
+    private Timestamp fechaFinal;
     private int idPersonal;
     
-	public FichajeDTO(int idFichaje, String accion, Date fechaInicial, Date fechaFinal, int idPersonal) {
+	public FichajeDTO(int idFichaje, String accion, Timestamp fechaInicial, Timestamp fechaFinal, int idPersonal) {
 		super();
 		this.idFichaje = idFichaje;
 		this.accion = accion;
@@ -34,19 +34,19 @@ public class FichajeDTO {
 		this.accion = accion;
 	}
 
-	public Date getFechaInicial() {
+	public Timestamp getFechaInicial() {
 		return fechaInicial;
 	}
 
-	public void setFechaInicial(Date fechaInicial) {
+	public void setFechaInicial(Timestamp fechaInicial) {
 		this.fechaInicial = fechaInicial;
 	}
 
-	public Date getFechaFinal() {
+	public Timestamp getFechaFinal() {
 		return fechaFinal;
 	}
 
-	public void setFechaFinal(Date fechaFinal) {
+	public void setFechaFinal(Timestamp fechaFinal) {
 		this.fechaFinal = fechaFinal;
 	}
 

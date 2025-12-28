@@ -106,7 +106,8 @@ public class Principal extends JFrame {
 					if (usuario == null) {
 						JOptionPane.showMessageDialog(null, "No se ha podido iniciar sesión, el correo o la contraseña incorrecta", "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
-						JOptionPane.showMessageDialog(null, "Se ha iniciado sesión pero se debe de sustituir este mensaje con otra ventana", "Ok", JOptionPane.INFORMATION_MESSAGE);
+						Empleado ventana = new Empleado(usuario, true);
+						ventana.setVisible(true);
 					}
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

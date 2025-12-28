@@ -15,6 +15,7 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 	private static final String SQL_UPDATE = "UPDATE Fichaje SET accion = ?, fecha_inicial = ?, fecha_final = ?, id_personal = ? WHERE id_fichaje = ?";
 	private static final String SQL_READ  = "SELECT * FROM Fichaje WHERE id_fichaje = ?";
 	private static final String SQL_READALL  = "SELECT * FROM Fichaje";
+	private static final String SQL_READPER  = "SELECT * FROM Fichaje WHERE id_personal = ?";
 	
 	private ConexionSGL conn = ConexionSGL.getInstancia();
 
@@ -24,9 +25,9 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 		try {
 			ps = conn.getCon().prepareStatement(SQL_CREATE);
 			ps.setString(1, fich.getAccion());
-			ps.setDate(2, fich.getFechaInicial());
+			ps.setTimestamp(2, fich.getFechaInicial());
 			if (fich.getFechaFinal() != null) {
-				ps.setDate(3, fich.getFechaFinal());
+				ps.setTimestamp(3, fich.getFechaFinal());
 			} else {
 				ps.setNull(3, Types.DATE);
 			}
@@ -72,9 +73,9 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 		try {
 			ps = conn.getCon().prepareStatement(SQL_UPDATE);
 			ps.setString(1, fich.getAccion());
-			ps.setDate(2, fich.getFechaInicial());
+			ps.setTimestamp(2, fich.getFechaInicial());
 			if (fich.getFechaFinal() != null) {
-				ps.setDate(3, fich.getFechaFinal());
+				ps.setTimestamp(3, fich.getFechaFinal());
 			} else {
 				ps.setNull(3, Types.DATE);
 			}
@@ -103,7 +104,7 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 			
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()==true) {
-				Fich = new FichajeDTO(rs.getInt("id_fichaje"), rs.getString("accion"), rs.getDate("fecha_inicial"), rs.getDate("fecha_final"), rs.getInt("id_personal"));
+				Fich = new FichajeDTO(rs.getInt("id_fichaje"), rs.getString("accion"), rs.getTimestamp("fecha_inicial"), rs.getTimestamp("fecha_final"), rs.getInt("id_personal"));
 			}
 			rs.close();
 		} catch (SQLException e) {
@@ -120,7 +121,24 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 			PreparedStatement ps = conn.getCon().prepareStatement(SQL_READALL);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				FichajeDTO fich = new FichajeDTO(rs.getInt("id_fichaje"), rs.getString("accion"), rs.getDate("fecha_inicial"), rs.getDate("fecha_final"), rs.getInt("id_personal"));
+				FichajeDTO fich = new FichajeDTO(rs.getInt("id_fichaje"), rs.getString("accion"), rs.getTimestamp("fecha_inicial"), rs.getTimestamp("fecha_final"), rs.getInt("id_personal"));
+				listaFich.add(fich);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listaFich;
+	}
+	
+	public ArrayList<FichajeDTO> readPer(int idPersonal) {
+		ArrayList<FichajeDTO> listaFich = new ArrayList<FichajeDTO>();
+		try {
+			PreparedStatement ps = conn.getCon().prepareStatement(SQL_READPER);
+			ps.setInt(1, idPersonal);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				FichajeDTO fich = new FichajeDTO(rs.getInt("id_fichaje"), rs.getString("accion"), rs.getTimestamp("fecha_inicial"), rs.getTimestamp("fecha_final"), rs.getInt("id_personal"));
 				listaFich.add(fich);
 			}
 			rs.close();
