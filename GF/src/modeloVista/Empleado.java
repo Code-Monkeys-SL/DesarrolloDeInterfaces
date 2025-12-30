@@ -134,6 +134,17 @@ public class Empleado extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton btnFichar = new JButton("Fichar");
+				btnFichar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Fichaje ventana = new Fichaje(usuario.getIdPersonal());
+						ventana.setVisible(true);
+						try {
+							cargarFichaje(usuario.getIdPersonal());
+						} catch (Exception e2) {
+							System.out.println("Error al cargar la listado de fichaje");
+						}
+					}
+				});
 				btnFichar.setBackground(new Color(29, 46, 74));
 				btnFichar.setForeground(new Color(255, 255, 255));
 				btnFichar.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -161,6 +172,7 @@ public class Empleado extends JDialog {
 		fichaje = Opfich.readPer(idPersonal);
 		
 		DefaultTableModel modelo = (DefaultTableModel)table_Fichaje.getModel();
+		while (modelo.getRowCount()>0) modelo.removeRow(0);
 		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelo);
 		table_Fichaje.setRowSorter(sorter);
 		int numCols = modelo.getColumnCount();
@@ -172,19 +184,45 @@ public class Empleado extends JDialog {
 			Timestamp fechaInicial = ficha.getFechaInicial();
 			Timestamp fechaFinal = ficha.getFechaFinal();
 	        fila[1] = sdf.format(fechaInicial);
-	        fila[2] = sdf.format(fechaFinal);
-	        
-	        long diferenciaMilisegundos = fechaFinal.getTime() - fechaInicial.getTime();
-	        long horas = TimeUnit.MILLISECONDS.toHours(diferenciaMilisegundos);
-	        
-	        if (horas < 24) {
-	            fila[3] = horas + " h";
+	        if (fechaFinal == null) {
+	            fila[2] = "";
+	            fila[3] = "";
 	        } else {
-	            long dias = horas / 24;
-	            fila[3] = dias + " d";
+	            fila[2] = sdf.format(fechaFinal);
+	            
+	            long horas = calcularHoras(fechaInicial, fechaFinal);
+	            
+	            if (horas < 24) {
+	                fila[3] = horas + " h";
+	            } else {
+	                long dias = horas / 24;
+	                fila[3] = dias + " d";
+	            }
 	        }
 			
 			modelo.addRow(fila);
 		}
+	}
+	
+	private long redondearHoras(double horasTotales) {
+		long parteEntera = (long) horasTotales;
+	    double parteDecimal = horasTotales - parteEntera;
+
+	    if (parteDecimal >= 0.50) {
+	        return parteEntera + 1;
+	    } else {
+	        return parteEntera;
+	    }
+	}
+	
+	private long calcularHoras(Timestamp fechaInicial, Timestamp fechaFinal) {
+	    long diferenciaMilisegundos = fechaFinal.getTime() - fechaInicial.getTime();
+
+	    long horas = diferenciaMilisegundos / (1000 * 60 * 60);
+	    long minutos = (diferenciaMilisegundos / (1000 * 60)) % 60;
+
+	    double horasTotales = horas + (minutos / 60.0);
+
+	    return redondearHoras(horasTotales);
 	}
 }

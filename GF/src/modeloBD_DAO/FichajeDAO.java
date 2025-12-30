@@ -16,6 +16,8 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 	private static final String SQL_READ  = "SELECT * FROM Fichaje WHERE id_fichaje = ?";
 	private static final String SQL_READALL  = "SELECT * FROM Fichaje";
 	private static final String SQL_READPER  = "SELECT * FROM Fichaje WHERE id_personal = ?";
+	private static final String SQL_READPERTODAY = "SELECT * FROM Fichaje WHERE id_personal = ? AND DATE(fecha_inicial) = CURDATE() AND fecha_final IS NULL";
+	private static final String SQL_READPERPAST = "SELECT * FROM Fichaje WHERE id_personal = ? AND DATE(fecha_inicial) < CURDATE() AND fecha_final IS NULL";
 	
 	private ConexionSGL conn = ConexionSGL.getInstancia();
 
@@ -146,6 +148,44 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 			e.printStackTrace();
 		}
 		return listaFich;
+	}
+	
+	public FichajeDTO readPerToday(int idPersonal) {
+	    FichajeDTO fich = null;
+	    try {
+	        PreparedStatement ps = conn.getCon().prepareStatement(SQL_READPERTODAY);
+	        ps.setInt(1, idPersonal);
+	        
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            fich = new FichajeDTO(rs.getInt("id_fichaje"), rs.getString("accion"), rs.getTimestamp("fecha_inicial"), rs.getTimestamp("fecha_final"), rs.getInt("id_personal"));
+	        }
+	        rs.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    return fich;
+	}
+	
+	public ArrayList<FichajeDTO> readPastRecords(int idPersonal) {
+	    ArrayList<FichajeDTO> listaFich = new ArrayList<>();
+	    
+	    try {
+	        PreparedStatement ps = conn.getCon().prepareStatement(SQL_READPERPAST);
+	        ps.setInt(1, idPersonal);
+	        
+	        ResultSet rs = ps.executeQuery();
+	        while (rs.next()) {
+	            FichajeDTO fich = new FichajeDTO(rs.getInt("id_fichaje"), rs.getString("accion"), rs.getTimestamp("fecha_inicial"), rs.getTimestamp("fecha_final"), rs.getInt("id_personal"));
+	            listaFich.add(fich);
+	        }
+	        rs.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return listaFich;
 	}
 
 }
