@@ -23,10 +23,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -118,6 +118,7 @@ public class Empleado extends JDialog {
 				"Acci\u00F3n", "Fecha Incial", "Fecha Final", "Duraci\u00F3n"
 			}
 		));
+		table_Fichaje.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_Table.setViewportView(table_Fichaje);
 		
 		try {
