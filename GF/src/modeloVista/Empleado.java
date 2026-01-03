@@ -178,7 +178,7 @@ public class Empleado extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Salir");
-				cancelButton.setBackground(new Color(29, 46, 74));
+				cancelButton.setBackground(new Color(128, 0, 32));
 				cancelButton.setForeground(new Color(255, 255, 255));
 				cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {

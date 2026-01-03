@@ -154,14 +154,8 @@ public class Personal extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
 				JButton cancelButton = new JButton("Salir");
-				cancelButton.setBackground(new Color(29, 46, 74));
+				cancelButton.setBackground(new Color(128, 0, 32));
 				cancelButton.setForeground(new Color(255, 255, 255));
 				cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 				cancelButton.addActionListener(new ActionListener() {
