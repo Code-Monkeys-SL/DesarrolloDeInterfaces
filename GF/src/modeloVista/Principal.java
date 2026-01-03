@@ -129,7 +129,7 @@ public class Principal extends JFrame {
 		});
 		btnSalir.setForeground(Color.WHITE);
 		btnSalir.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnSalir.setBackground(new Color(29, 46, 74));
+		btnSalir.setBackground(new Color(128, 0, 32));
 		btnSalir.setBounds(123, 192, 90, 21);
 		contentPane.add(btnSalir);
 

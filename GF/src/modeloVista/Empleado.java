@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 
 import modeloBD_DAO.CategoriaDAO;
 import modeloBD_DAO.FichajeDAO;
+import modeloBD_DAO.PersonalDAO;
 import modeloBD_DTO.CategoriaDTO;
 import modeloBD_DTO.FichajeDTO;
 import modeloBD_DTO.PersonalDTO;
@@ -34,6 +35,7 @@ public class Empleado extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
+	private static PersonalDAO Opper = new PersonalDAO();
 	private static CategoriaDAO Opcat = new CategoriaDAO();
 	private CategoriaDTO categoria;
 	private static FichajeDAO Opfich = new FichajeDAO();
@@ -53,6 +55,13 @@ public class Empleado extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		
+		boolean isAdmin = false;
+		try {
+			isAdmin = Opper.isAdmin(usuario.getCorreo());			
+		} catch (Exception e) {
+			System.out.println("Error al comprobar privilegios");
+		}
 		
 		JLabel lblTitulo = new JLabel("Titulo User");
 		lblTitulo.setOpaque(true);
@@ -134,6 +143,20 @@ public class Empleado extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				JButton btnControlDePersonal = new JButton("Control de Personal");
+				btnControlDePersonal.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Personal ventana = new Personal();
+						ventana.setVisible(true);
+					}
+				});
+				btnControlDePersonal.setForeground(Color.WHITE);
+				btnControlDePersonal.setFont(new Font("Tahoma", Font.PLAIN, 12));
+				btnControlDePersonal.setBackground(new Color(29, 46, 74));
+				btnControlDePersonal.setActionCommand("OK");
+				if (isAdmin && login)
+					buttonPane.add(btnControlDePersonal);
+				
 				JButton btnFichar = new JButton("Fichar");
 				btnFichar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
