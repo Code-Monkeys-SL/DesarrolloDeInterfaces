@@ -41,6 +41,7 @@ public class Empleado extends JDialog {
 	private static FichajeDAO Opfich = new FichajeDAO();
 	private ArrayList<FichajeDTO> fichaje;
 	private JTable table_Fichaje;
+	private JLabel lblUser;
 
 	/**
 	 * Create the dialog.
@@ -81,39 +82,13 @@ public class Empleado extends JDialog {
 		scrollPane_User.setBounds(29, 70, 475, 140);
 		contentPanel.add(scrollPane_User);
 		
-		JLabel lblUser = new JLabel();
+		lblUser = new JLabel();
 		lblUser.setVerticalAlignment(SwingConstants.TOP);
 		scrollPane_User.setViewportView(lblUser);
 		lblUser.setBackground(new Color(247, 244, 238));
 		lblUser.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
-		String htmlContent = "<html><body>"
-			    + "<table style='border-collapse: collapse; width: 99%; margin: 0 auto;'>"
-			    + "<tr><td colspan='4' style='border: 1px solid black; text-align: center;'><b>Datos del empleado:</b></td></tr>"
-			    + "<tr>"
-			    + String.format("<td style='border: 1px solid black; width: 25%%;'>Nombre:</td><td style='border: 1px solid black; width: 25%%;'>%s</td>"
-			    + "<td style='border: 1px solid black; width: 25%%;'>Apellidos:</td><td style='border: 1px solid black; width: 25%%;'>%s</td></tr>",
-			          usuario.getNombre(), usuario.getApellidos())
-			    + "<tr>"
-			    + String.format("<td style='border: 1px solid black;'>Telefono:</td><td style='border: 1px solid black;'>%s</td>"
-			    + "<td style='border: 1px solid black;'>Correo:</td><td style='border: 1px solid black;'>%s</td></tr>",
-			          usuario.getTelefono(), usuario.getCorreo());
-
-		try {
-		    categoria = Opcat.read(usuario.getIdCategoria());
-		    htmlContent += String.format("<tr>"
-		        + "<td style='border: 1px solid black;'>Categoria profesional:</td>"
-		        + "<td style='border: 1px solid black;' colspan='3'>%s</td></tr>"
-		        + "<tr>"
-		        + "<td style='border: 1px solid black;'>Descripción:</td>"
-		        + "<td style='border: 1px solid black;' colspan='3'>%s</td></tr>",
-		        categoria.getNombre(), categoria.getDescripcion());
-		} catch (Exception ex) {
-		    htmlContent += "<tr><td colspan='4' style='border: 1px solid black;'>No se ha podido leer los datos de la categoría profesional correctamente.</td></tr>";
-		}
-		
-		htmlContent += "</table></body></html>";	
-		lblUser.setText(htmlContent);
+		cargarUsuario(usuario);
 		
 		JScrollPane scrollPane_Table = new JScrollPane();
 		scrollPane_Table.setBounds(29, 229, 475, 140);
@@ -148,6 +123,7 @@ public class Empleado extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						Personal ventana = new Personal();
 						ventana.setVisible(true);
+						cargarUsuario(Opper.read(usuario.getIdPersonal())); 
 					}
 				});
 				btnControlDePersonal.setForeground(Color.WHITE);
@@ -172,8 +148,8 @@ public class Empleado extends JDialog {
 				btnFichar.setBackground(new Color(29, 46, 74));
 				btnFichar.setForeground(new Color(255, 255, 255));
 				btnFichar.setFont(new Font("Tahoma", Font.PLAIN, 12));
-				btnFichar.setActionCommand("OK");
-				buttonPane.add(btnFichar);
+				if (login)
+					buttonPane.add(btnFichar);
 				getRootPane().setDefaultButton(btnFichar);
 			}
 			{
@@ -189,6 +165,36 @@ public class Empleado extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+		}
+	}
+	
+	private void cargarUsuario(PersonalDTO usuario) {
+		String htmlContent = "<html><body>"
+			    + "<table style='border-collapse: collapse; width: 99%; margin: 0 auto;'>"
+			    + "<tr><td colspan='4' style='border: 1px solid black; text-align: center;'><b>Datos del empleado:</b></td></tr>"
+			    + "<tr>"
+			    + String.format("<td style='border: 1px solid black; width: 25%%;'>Nombre:</td><td style='border: 1px solid black; width: 25%%;'>%s</td>"
+			    + "<td style='border: 1px solid black; width: 25%%;'>Apellidos:</td><td style='border: 1px solid black; width: 25%%;'>%s</td></tr>",
+			          usuario.getNombre(), usuario.getApellidos())
+			    + "<tr>"
+			    + String.format("<td style='border: 1px solid black;'>Telefono:</td><td style='border: 1px solid black;'>%s</td>"
+			    + "<td style='border: 1px solid black;'>Correo:</td><td style='border: 1px solid black;'>%s</td></tr>",
+			          usuario.getTelefono(), usuario.getCorreo());
+
+		try {
+		    categoria = Opcat.read(usuario.getIdCategoria());
+		    htmlContent += String.format("<tr>"
+		        + "<td style='border: 1px solid black;'>Categoria profesional:</td>"
+		        + "<td style='border: 1px solid black;' colspan='3'>%s</td></tr>"
+		        + "<tr>"
+		        + "<td style='border: 1px solid black;'>Descripción:</td>"
+		        + "<td style='border: 1px solid black;' colspan='3'>%s</td></tr>",
+		        categoria.getNombre(), categoria.getDescripcion());
+		} catch (Exception ex) {
+		    htmlContent += "<tr><td colspan='4' style='border: 1px solid black;'>No se ha podido leer los datos de la categoría profesional correctamente.</td></tr>";
+		} finally {
+			htmlContent += "</table></body></html>";	
+			lblUser.setText(htmlContent);	
 		}
 	}
 	

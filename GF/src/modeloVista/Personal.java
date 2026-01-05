@@ -86,6 +86,13 @@ public class Personal extends JDialog {
 		panel_user.setLayout(null);
 		
 		JButton btnNuevoUsuario = new JButton("Nuevo");
+		btnNuevoUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Usuario ventana = new Usuario();
+				ventana.setVisible(true);
+				cargarPersonal();
+			}
+		});
 		btnNuevoUsuario.setForeground(Color.WHITE);
 		btnNuevoUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNuevoUsuario.setBackground(new Color(29, 46, 74));
@@ -93,6 +100,20 @@ public class Personal extends JDialog {
 		panel_user.add(btnNuevoUsuario);
 		
 		JButton btnModificarUsuario = new JButton("Modificar");
+		btnModificarUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int seleccion = table_Personal.getSelectedRow();
+		        if (seleccion == -1) {
+		            JOptionPane.showMessageDialog(null, "Por favor, selecciona un usuario para modificar", "Error", JOptionPane.ERROR_MESSAGE);
+		        } else {
+		            int id_personal = (int) table_Personal.getValueAt(seleccion, 0);
+		            PersonalDTO usuario = Opper.read(id_personal);
+		            Usuario ventana = new Usuario(usuario);
+		            ventana.setVisible(true);
+		            cargarPersonal();
+		        }
+			}
+		});
 		btnModificarUsuario.setForeground(Color.WHITE);
 		btnModificarUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnModificarUsuario.setBackground(new Color(29, 46, 74));
@@ -100,6 +121,22 @@ public class Personal extends JDialog {
 		panel_user.add(btnModificarUsuario);
 		
 		JButton btnEliminar = new JButton("Eliminar");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int seleccion = table_Personal.getSelectedRow();
+				if (seleccion == -1) {
+					JOptionPane.showMessageDialog(null, "Por favor, selecciona un usuario para eliminar", "Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					int id_personal = (int) table_Personal.getValueAt(seleccion, 0);
+					String nombre_usuario = table_Personal.getValueAt(seleccion, 1) + " " + table_Personal.getValueAt(seleccion, 2);
+		            int confirm = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar " + nombre_usuario.trim()  + "?", "Confirmar eliminación de usuario", JOptionPane.YES_NO_OPTION);
+		            if (confirm == JOptionPane.YES_OPTION) {
+		                Opper.delete(id_personal);
+		                cargarPersonal();
+		            }
+				}
+			}
+		});
 		btnEliminar.setForeground(Color.WHITE);
 		btnEliminar.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnEliminar.setBackground(new Color(29, 46, 74));
