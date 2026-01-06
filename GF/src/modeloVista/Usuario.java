@@ -230,7 +230,7 @@ public class Usuario extends JDialog {
 			            }
 					}
 				});
-				actionButton.setFont(new Font("Tahoma", Font.PLAIN, 10));
+				actionButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 				actionButton.setActionCommand("");
 				actionButton.setBackground(new Color(29, 46, 74));
 				actionButton.setForeground(new Color(255, 255, 255));

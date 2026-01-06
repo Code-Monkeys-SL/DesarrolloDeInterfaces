@@ -173,6 +173,11 @@ public class Personal extends JDialog {
 		contentPanel.add(panel_category);
 		
 		JButton btnControlDeCategorias = new JButton("Control de Categorias");
+		btnControlDeCategorias.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Categoria ventana = new Categoria();
+				ventana.setVisible(true);			}
+		});
 		btnControlDeCategorias.setForeground(Color.WHITE);
 		btnControlDeCategorias.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnControlDeCategorias.setBackground(new Color(29, 46, 74));
