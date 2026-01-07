@@ -15,6 +15,7 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 	private static final String SQL_READ  = "SELECT * FROM Personal WHERE id_personal = ?";
 	private static final String SQL_READALL  = "SELECT * FROM Personal";
 	private static final String SQL_READLOGIN  = "SELECT * FROM Personal WHERE correo = ? AND contraseña = ?";
+	private static final String SQL_CHECK_ADMIN = "SELECT p.admin, c.nombre FROM Personal p JOIN Categoria c ON p.id_categoria = c.id_categoria WHERE p.correo = ?";
 	
 	private ConexionSGL conn = ConexionSGL.getInstancia();
 
@@ -146,4 +147,20 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 		
 		return Per;
 	}
+	
+	public boolean isAdmin(String correo) {
+        boolean isAdmin = false;
+        try {
+            PreparedStatement ps = conn.getCon().prepareStatement(SQL_CHECK_ADMIN);
+            ps.setString(1, correo);
+            
+            ResultSet rs = ps.executeQuery();
+            if (rs.next())
+                isAdmin = rs.getBoolean("admin") || "Gerente".equalsIgnoreCase(rs.getString("nombre"));
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isAdmin;
+    }
 }

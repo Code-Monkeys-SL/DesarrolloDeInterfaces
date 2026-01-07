@@ -14,6 +14,7 @@ public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 	private static final String SQL_UPDATE = "UPDATE Categoria SET nombre = ?, descripcion = ? WHERE id_categoria = ?";
 	private static final String SQL_READ  = "SELECT * FROM Categoria WHERE id_categoria = ?";
 	private static final String SQL_READALL  = "SELECT * FROM Categoria";
+	private static final String SQL_READBYNAME = "SELECT * FROM Categoria WHERE nombre = ?"; 
 	
 	private ConexionSGL conn = ConexionSGL.getInstancia();
 
@@ -117,4 +118,21 @@ public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 		return listaCat;
 	}
 
+	public CategoriaDTO readByName(String name) {
+	    CategoriaDTO cat = null;
+	    PreparedStatement ps = null;
+	    try {
+	        ps = conn.getCon().prepareStatement(SQL_READBYNAME);
+	        ps.setString(1, name);
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            cat = new CategoriaDTO(rs.getInt("id_categoria"), rs.getString("nombre"), rs.getString("descripcion"));
+	        }
+	        rs.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    return cat;
+	}
 }
