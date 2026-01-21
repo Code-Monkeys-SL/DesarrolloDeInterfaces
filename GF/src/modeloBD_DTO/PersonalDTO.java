@@ -1,6 +1,10 @@
 package modeloBD_DTO;
 
-public class PersonalDTO {
+import java.util.Comparator;
+
+import modeloBD_DAO.CategoriaDAO;
+
+public class PersonalDTO implements Comparable <PersonalDTO> {
 	private int idPersonal;
     private String nombre;
     private String apellidos;
@@ -85,5 +89,111 @@ public class PersonalDTO {
 
 	public void setIdCategoria(int idCategoria) {
 		this.idCategoria = idCategoria;
+	}
+
+	@Override
+	public int compareTo(PersonalDTO p) {
+		if (this == p)
+			return 0;
+		if (p == null)
+			return 1;
+		if (getClass() != p.getClass())
+			return 1;
+		
+		if (this.idPersonal == 0) {
+			if (p.idPersonal != 0) return -1;
+				else return 0;
+		} else
+			return Integer.compare(this.idPersonal, p.idPersonal);
+	}
+	
+	public static class Comparadores {
+	    // Comparadores Ascendentes
+	    public static Comparator<PersonalDTO> ID_PERSONAL_ASC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            return Integer.compare(p1.getIdPersonal(), p2.getIdPersonal());
+	        }
+	    };
+
+	    public static Comparator<PersonalDTO> NOMBRE_ASC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            return p1.getNombre().compareTo(p2.getNombre());
+	        }
+	    };
+
+	    public static Comparator<PersonalDTO> APELLIDOS_ASC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            return p1.getApellidos().compareTo(p2.getApellidos());
+	        }
+	    };
+
+	    public static Comparator<PersonalDTO> ID_CATEGORIA_ASC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            return Integer.compare(p1.getIdCategoria(), p2.getIdCategoria());
+	        }
+	    };
+
+	    public static Comparator<PersonalDTO> CATEGORIA_ASC = new Comparator<PersonalDTO>() {
+	    	@Override
+	    	public int compare(PersonalDTO p1, PersonalDTO p2) {
+	    		String nombreCategoria1 = obtenerNombreCategoria(p1.getIdCategoria());
+	    		String nombreCategoria2 = obtenerNombreCategoria(p2.getIdCategoria());
+	    		return nombreCategoria1.compareTo(nombreCategoria2);
+	    	}
+	    };
+
+	    // Comparadores Descendentes
+	    public static Comparator<PersonalDTO> ID_PERSONAL_DESC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            return Integer.compare(p2.getIdPersonal(), p1.getIdPersonal());
+	        }
+	    };
+
+	    public static Comparator<PersonalDTO> NOMBRE_DESC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            return p2.getNombre().compareTo(p1.getNombre());
+	        }
+	    };
+
+	    public static Comparator<PersonalDTO> APELLIDOS_DESC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            return p2.getApellidos().compareTo(p1.getApellidos());
+	        }
+	    };
+
+	    public static Comparator<PersonalDTO> ID_CATEGORIA_DESC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            return Integer.compare(p2.getIdCategoria(), p1.getIdCategoria());
+	        }
+	    };
+	    
+
+	    public static Comparator<PersonalDTO> CATEGORIA_DESC = new Comparator<PersonalDTO>() {
+	        @Override
+	        public int compare(PersonalDTO p1, PersonalDTO p2) {
+	            String nombreCategoria1 = obtenerNombreCategoria(p1.getIdCategoria());
+	            String nombreCategoria2 = obtenerNombreCategoria(p2.getIdCategoria());
+	            return nombreCategoria2.compareTo(nombreCategoria1);
+	        }
+	    };
+	    
+	    // Metodo para obtener nombres de categorias
+	    private static String obtenerNombreCategoria(int idCategoria) {
+	        CategoriaDAO Opcat = new CategoriaDAO();
+	        for (CategoriaDTO categoria : Opcat.readAll()) {
+	            if (categoria.getIdCategoria() == idCategoria) {
+	                return categoria.getNombre();
+	            }
+	        }
+	        return "Desconocida";
+	    }
 	}
 }

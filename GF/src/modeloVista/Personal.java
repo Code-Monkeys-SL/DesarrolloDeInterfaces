@@ -15,6 +15,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
@@ -26,9 +27,12 @@ import javax.swing.table.TableRowSorter;
 import modeloBD_DAO.CategoriaDAO;
 import modeloBD_DAO.PersonalDAO;
 import modeloBD_DTO.CategoriaDTO;
+import modeloBD_DTO.FichajeDTO;
 import modeloBD_DTO.PersonalDTO;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class Personal extends JDialog {
 
@@ -38,6 +42,8 @@ public class Personal extends JDialog {
 	private PersonalDTO usuario;
 	private static CategoriaDAO Opcat = new CategoriaDAO();
 	private JTable table_Personal;
+	private JComboBox cbOrdenarTabla;
+	private JComboBox cbOrdenarTipo;
 
 	/**
 	 * Create the dialog.
@@ -45,7 +51,7 @@ public class Personal extends JDialog {
 	public Personal() {
 		setModal(true);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 700, 425);
+		setBounds(100, 100, 700, 460);
 		setResizable(false);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(247, 244, 238));
@@ -79,7 +85,7 @@ public class Personal extends JDialog {
 		JPanel panel_user = new JPanel();
 		panel_user.setBackground(new Color(247, 244, 238));
 		panel_user.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Gesti\u00F3n de Usuarios", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_user.setBounds(21, 261, 429, 74);
+		panel_user.setBounds(21, 283, 429, 74);
 		TitledBorder border_user = (TitledBorder) panel_user.getBorder();
         border_user.setTitleFont(new Font("Tahoma", Font.PLAIN, 12));
 		contentPanel.add(panel_user);
@@ -167,7 +173,7 @@ public class Personal extends JDialog {
 		panel_category.setLayout(null);
 		panel_category.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Gesti\u00F3n de Categorias", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_category.setBackground(new Color(247, 244, 238));
-		panel_category.setBounds(466, 261, 194, 74);
+		panel_category.setBounds(466, 283, 194, 74);
 		TitledBorder border_category = (TitledBorder) panel_category.getBorder();
         border_category.setTitleFont(new Font("Tahoma", Font.PLAIN, 12));
 		contentPanel.add(panel_category);
@@ -183,6 +189,47 @@ public class Personal extends JDialog {
 		btnControlDeCategorias.setBackground(new Color(29, 46, 74));
 		btnControlDeCategorias.setBounds(10, 30, 174, 21);
 		panel_category.add(btnControlDeCategorias);
+		
+		JLabel lblOrdenarPor = new JLabel("Ordenar por:");
+		lblOrdenarPor.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblOrdenarPor.setBounds(21, 259, 90, 13);
+		contentPanel.add(lblOrdenarPor);
+		
+		cbOrdenarTabla = new JComboBox();
+		cbOrdenarTabla.setModel(new DefaultComboBoxModel(new String[] {"Id", "Nombre", "Apellidos", "Categoria"}));
+		cbOrdenarTabla.setSelectedIndex(0);
+		cbOrdenarTabla.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		cbOrdenarTabla.setBounds(105, 255, 161, 21);
+		contentPanel.add(cbOrdenarTabla);
+		
+		cbOrdenarTipo = new JComboBox();
+		cbOrdenarTipo.setModel(new DefaultComboBoxModel(new String[] {"Ascendente", "Descendente"}));
+		cbOrdenarTipo.setSelectedIndex(0);
+		cbOrdenarTipo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		cbOrdenarTipo.setBounds(273, 256, 120, 21);
+		contentPanel.add(cbOrdenarTipo);
+		
+		cbOrdenarTabla.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					cargarPersonal();
+				} catch (Exception ex) {
+					System.out.println("Error al cargar la listado de ordenado");
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		cbOrdenarTipo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					cargarPersonal();
+				} catch (Exception ex) {
+					System.out.println("Error al cargar la listado de ordenado");
+					ex.printStackTrace();
+				}
+			}
+		});
 		
 		try {
 			cargarPersonal();
@@ -215,11 +262,13 @@ public class Personal extends JDialog {
 		ArrayList<PersonalDTO> listaPersonal = Opper.readAll();
 	    ArrayList<CategoriaDTO> listaCategorias = Opcat.readAll();
 	    
+	    ordenarTabla(listaPersonal);
+	    
 	    DefaultTableModel modelo = (DefaultTableModel)table_Personal.getModel();
 		while (modelo.getRowCount()>0) modelo.removeRow(0);
 		
-		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelo);
-		table_Personal.setRowSorter(sorter);
+//		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelo);
+//		table_Personal.setRowSorter(sorter);
 		
 		int numCols = modelo.getColumnCount();
 		
@@ -242,5 +291,28 @@ public class Personal extends JDialog {
 	        fila[6] = categoriaNombre;
 	        modelo.addRow(fila);
 	    }
+	}
+	
+	private void ordenarTabla(ArrayList<PersonalDTO> listaPersonal) {
+	    String criterio = (String) cbOrdenarTabla.getSelectedItem();
+	    String tipoOrden = (String) cbOrdenarTipo.getSelectedItem();
+	    Comparator<PersonalDTO> comparador = null;
+
+	    switch (criterio) {
+	        case "Id":
+	            comparador = tipoOrden.equals("Ascendente") ? PersonalDTO.Comparadores.ID_PERSONAL_ASC : PersonalDTO.Comparadores.ID_PERSONAL_DESC;
+	            break;
+	        case "Nombre":
+	            comparador = tipoOrden.equals("Ascendente") ? PersonalDTO.Comparadores.NOMBRE_ASC : PersonalDTO.Comparadores.NOMBRE_DESC;
+	            break;
+	        case "Apellidos":
+	            comparador = tipoOrden.equals("Ascendente") ? PersonalDTO.Comparadores.APELLIDOS_ASC : PersonalDTO.Comparadores.APELLIDOS_DESC;
+	            break;
+	        case "Categoria":
+	        	comparador = tipoOrden.equals("Ascendente") ? PersonalDTO.Comparadores.CATEGORIA_ASC : PersonalDTO.Comparadores.CATEGORIA_DESC;
+	            break;
+	    }
+
+	    listaPersonal.sort(comparador);
 	}
 }

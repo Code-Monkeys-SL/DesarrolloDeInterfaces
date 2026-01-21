@@ -24,12 +24,15 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
+//import javax.swing.table.TableRowSorter;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class Empleado extends JDialog {
 
@@ -42,6 +45,8 @@ public class Empleado extends JDialog {
 	private ArrayList<FichajeDTO> fichaje;
 	private JTable table_Fichaje;
 	private JLabel lblUser;
+	private JComboBox cbOrdenarTabla;
+	private JComboBox cbOrdenarTipo;
 
 	/**
 	 * Create the dialog.
@@ -49,7 +54,7 @@ public class Empleado extends JDialog {
 	public Empleado(PersonalDTO usuario, boolean login) {
 		setModal(true);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 545, 460);
+		setBounds(100, 100, 545, 480);
 		setResizable(false);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(247, 244, 238));
@@ -90,8 +95,49 @@ public class Empleado extends JDialog {
 		
 		cargarUsuario(usuario);
 		
+		JLabel lblOrdenarPor = new JLabel("Ordenar por:");
+		lblOrdenarPor.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblOrdenarPor.setBounds(29, 220, 90, 13);
+		contentPanel.add(lblOrdenarPor);
+		
+		cbOrdenarTabla = new JComboBox();
+		cbOrdenarTabla.setModel(new DefaultComboBoxModel(new String[] {"Acción", "Fecha Inicial", "Fecha Final", "Duración"}));
+		cbOrdenarTabla.setSelectedIndex(1);
+		cbOrdenarTabla.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		cbOrdenarTabla.setBounds(113, 216, 161, 21);
+		contentPanel.add(cbOrdenarTabla);
+		
+		cbOrdenarTipo = new JComboBox();
+		cbOrdenarTipo.setModel(new DefaultComboBoxModel(new String[] {"Ascendente", "Descendente"}));
+		cbOrdenarTipo.setSelectedIndex(0);
+		cbOrdenarTipo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		cbOrdenarTipo.setBounds(281, 217, 120, 21);
+		contentPanel.add(cbOrdenarTipo);
+		
+		cbOrdenarTabla.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					cargarFichaje(usuario.getIdPersonal());
+				} catch (Exception ex) {
+					System.out.println("Error al cargar la listado de ordenado");
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		cbOrdenarTipo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					cargarFichaje(usuario.getIdPersonal());
+				} catch (Exception ex) {
+					System.out.println("Error al cargar la listado de ordenado");
+					ex.printStackTrace();
+				}
+			}
+		});
+		
 		JScrollPane scrollPane_Table = new JScrollPane();
-		scrollPane_Table.setBounds(29, 229, 475, 140);
+		scrollPane_Table.setBounds(29, 243, 475, 140);
 		contentPanel.add(scrollPane_Table);
 		
 		table_Fichaje = new JTable();
@@ -201,10 +247,14 @@ public class Empleado extends JDialog {
 	private void cargarFichaje(int idPersonal) throws SQLException {
 		fichaje = Opfich.readPer(idPersonal);
 		
+		if (fichaje != null && !fichaje.isEmpty()) {
+	        ordenarTabla();
+	    }
+		
 		DefaultTableModel modelo = (DefaultTableModel)table_Fichaje.getModel();
 		while (modelo.getRowCount()>0) modelo.removeRow(0);
-		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelo);
-		table_Fichaje.setRowSorter(sorter);
+//		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelo);
+//		table_Fichaje.setRowSorter(sorter);
 		int numCols = modelo.getColumnCount();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		for (FichajeDTO ficha : fichaje) {
@@ -254,5 +304,28 @@ public class Empleado extends JDialog {
 	    double horasTotales = horas + (minutos / 60.0);
 
 	    return redondearHoras(horasTotales);
+	}
+	
+	private void ordenarTabla() {
+	    String criterio = (String) cbOrdenarTabla.getSelectedItem();
+	    String tipoOrden = (String) cbOrdenarTipo.getSelectedItem();
+	    Comparator<FichajeDTO> comparador = null;
+
+	    switch (criterio) {
+	        case "Acción":
+	            comparador = tipoOrden.equals("Ascendente") ? FichajeDTO.Comparadores.ACCION_ASC : FichajeDTO.Comparadores.ACCION_DESC;
+	            break;
+	        case "Fecha Inicial":
+	            comparador = tipoOrden.equals("Ascendente") ? FichajeDTO.Comparadores.FECHA_INICIAL_ASC : FichajeDTO.Comparadores.FECHA_INICIAL_DESC;
+	            break;
+	        case "Fecha Final":
+	            comparador = tipoOrden.equals("Ascendente") ? FichajeDTO.Comparadores.FECHA_FINAL_ASC : FichajeDTO.Comparadores.FECHA_FINAL_DESC;
+	            break;
+	        case "Duración":
+	            comparador = tipoOrden.equals("Ascendente") ? FichajeDTO.Comparadores.DIFERENCIA_HORAS_ASC : FichajeDTO.Comparadores.DIFERENCIA_HORAS_DESC;
+	            break;
+	    }
+
+	    fichaje.sort(comparador);
 	}
 }
