@@ -164,12 +164,12 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="20" splitType="Stretch"/>
+		<band height="6" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="37" splitType="Stretch">
+		<band height="24" splitType="Stretch">
 			<frame>
-				<reportElement mode="Opaque" x="0" y="13" width="555" height="24" forecolor="#D0B48E" backcolor="#1D2E4A" uuid="729c3539-f946-4d0e-a0a7-bda2815ea1b0"/>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="24" forecolor="#D0B48E" backcolor="#1D2E4A" uuid="729c3539-f946-4d0e-a0a7-bda2815ea1b0"/>
 				<textField evaluationTime="Report">
 					<reportElement style="Column header" x="513" y="0" width="40" height="20" forecolor="#FFFFFF" uuid="4834e99c-7f6c-485a-b098-50e5187f2ab4"/>
 					<textElement verticalAlignment="Middle">
