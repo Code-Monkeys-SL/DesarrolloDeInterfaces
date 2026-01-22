@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import conexionBD.ConexionSGL;
 import modeloBD_DTO.PersonalDTO;
 
+/**
+ * Clase que implementa las operaciones de acceso a datos para la entidad Personal.
+ * Esta clase gestiona las operaciones CRUD.
+ */
 public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 	private static final String SQL_CREATE = "INSERT INTO Personal (nombre, apellidos, telefono, correo, contraseña, admin, id_categoria) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	private static final String SQL_DELETE = "DELETE FROM Personal WHERE id_personal = ?";
@@ -19,6 +23,12 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 	
 	private ConexionSGL conn = ConexionSGL.getInstancia();
 
+	/**
+     * Inserta un nuevo personal en la base de datos.
+     *
+     * @param per El objeto PersonalDTO que representa el personal a insertar
+     * @return true si la inserción fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean create(PersonalDTO per) {
 		PreparedStatement ps = null;
@@ -45,6 +55,12 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 		return false;
 	}
 
+	/**
+     * Elimina un personal de la base de datos utilizando su clave primaria.
+     *
+     * @param pk La clave primaria del personal a eliminar
+     * @return true si la eliminación fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean delete(Object pk) {
 		PreparedStatement ps = null;
@@ -66,6 +82,12 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 		return false;
 	}
 
+	/**
+     * Actualiza un personal en la base de datos.
+     *
+     * @param per El objeto PersonalDTO que contiene los datos actualizados
+     * @return true si la actualización fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean update(PersonalDTO per) {
 		PreparedStatement ps = null;
@@ -93,6 +115,12 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 		return false;
 	}
 
+	/**
+     * Lee un personal de la base de datos utilizando su clave primaria.
+     *
+     * @param pk La clave primaria del personal a leer
+     * @return Un objeto PersonalDTO representando el personal, o null si no se encontró
+     */
 	@Override
 	public PersonalDTO read(Object pk) {
 		PersonalDTO Per = null;
@@ -112,6 +140,11 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 		return Per;
 	}
 
+	/**
+     * Lee todos los personales de la base de datos.
+     *
+     * @return Una lista de objetos PersonalDTO representando todos los personales
+     */
 	@Override
 	public ArrayList<PersonalDTO> readAll() {
 		ArrayList<PersonalDTO> listaPer = new ArrayList<PersonalDTO>();
@@ -129,6 +162,13 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 		return listaPer;
 	}
 
+	/**
+     * Inicia sesión para un personal verificando el correo y la contraseña.
+     *
+     * @param mail El correo electrónico del personal
+     * @param pass La contraseña del personal
+     * @return Un objeto PersonalDTO representando el personal, o null si las credenciales son incorrectas
+     */
 	public PersonalDTO login(String mail, String pass) {
 		PersonalDTO Per = null;
 		try {
@@ -148,6 +188,12 @@ public class PersonalDAO implements Patron_DAO<PersonalDTO> {
 		return Per;
 	}
 	
+	/**
+     * Verifica si un personal es administrador basado en su correo.
+     *
+     * @param correo El correo del personal a verificar
+     * @return true si es administrador, false en caso contrario
+     */
 	public boolean isAdmin(String correo) {
         boolean isAdmin = false;
         try {

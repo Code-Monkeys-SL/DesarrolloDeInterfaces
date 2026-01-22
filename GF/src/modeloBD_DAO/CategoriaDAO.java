@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import conexionBD.ConexionSGL;
 import modeloBD_DTO.CategoriaDTO;
 
+/**
+ * Clase que implementa las operaciones de acceso a datos para la entidad Categoria.
+ * 
+ * Esta clase gestiona las operaciones CRUD.
+ */
 public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 	private static final String SQL_CREATE = "INSERT INTO Categoria (nombre, descripcion) VALUES (?, ?)";
 	private static final String SQL_DELETE = "DELETE FROM Categoria WHERE id_categoria = ?";
@@ -18,6 +23,12 @@ public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 	
 	private ConexionSGL conn = ConexionSGL.getInstancia();
 
+	/**
+	 * Inserta una nueva categoría en la base de datos.
+	 * 
+	 * @param cat El objeto CategoriaDTO que representa la categoría a insertar
+	 * @return true si la inserción fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean create(CategoriaDTO cat) {
 		PreparedStatement ps = null;
@@ -39,6 +50,12 @@ public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 		return false;
 	}
 
+	/**
+	 * Elimina una categoría de la base de datos utilizando su clave primaria.
+	 * 
+	 * @param pk La clave primaria de la categoría a eliminar
+	 * @return true si la eliminación fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean delete(Object pk) {
 		PreparedStatement ps = null;
@@ -60,6 +77,12 @@ public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 		return false;
 	}
 
+	/**
+	 * Actualiza una categoría en la base de datos.
+	 * 
+	 * @param cat El objeto CategoriaDTO que contiene los datos actualizados
+	 * @return true si la actualización fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean update(CategoriaDTO cat) {
 		PreparedStatement ps = null;
@@ -82,6 +105,12 @@ public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 		return false;
 	}
 
+	/**
+	 * Lee una categoría de la base de datos utilizando su clave primaria.
+	 * 
+	 * @param pk La clave primaria de la categoría a leer
+	 * @return Un objeto CategoriaDTO representando la categoría, o null si no se encontró
+     */
 	@Override
 	public CategoriaDTO read(Object pk) {
 		CategoriaDTO Cat = null;
@@ -101,6 +130,11 @@ public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 		return Cat;
 	}
 
+	/**
+	 * Lee todas las categorías de la base de datos.
+	 * 
+	 * @return Una lista de objetos CategoriaDTO representando todas las categorías
+     */
 	@Override
 	public ArrayList<CategoriaDTO> readAll() {
 		ArrayList<CategoriaDTO> listaCat = new ArrayList<CategoriaDTO>();
@@ -118,6 +152,12 @@ public class CategoriaDAO implements Patron_DAO<CategoriaDTO> {
 		return listaCat;
 	}
 
+	/**
+     * Lee una categoría de la base de datos utilizando su nombre.
+     *
+     * @param name El nombre de la categoría a leer
+     * @return Un objeto CategoriaDTO representando la categoría, o null si no se encontró
+     */
 	public CategoriaDTO readByName(String name) {
 	    CategoriaDTO cat = null;
 	    PreparedStatement ps = null;

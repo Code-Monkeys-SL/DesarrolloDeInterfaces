@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import conexionBD.ConexionSGL;
 import modeloBD_DTO.FichajeDTO;
 
+/**
+ * Clase que implementa las operaciones de acceso a datos para la entidad Fichaje.
+ * Esta clase gestiona las operaciones CRUD.
+ */
 public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 	private static final String SQL_CREATE = "INSERT INTO Fichaje (accion, fecha_inicial, fecha_final, id_personal) VALUES (?, ?, ?, ?)";
 	private static final String SQL_DELETE = "DELETE FROM Fichaje WHERE id_fichaje = ?";
@@ -21,6 +25,12 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 	
 	private ConexionSGL conn = ConexionSGL.getInstancia();
 
+	/**
+     * Inserta un nuevo fichaje en la base de datos.
+     *
+     * @param fich El objeto FichajeDTO que representa el fichaje a insertar
+     * @return true si la inserción fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean create(FichajeDTO fich) {
 		PreparedStatement ps = null;
@@ -48,6 +58,12 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 		return false;
 	}
 
+	/**
+     * Elimina un fichaje de la base de datos utilizando su clave primaria.
+     *
+     * @param pk La clave primaria del fichaje a eliminar
+     * @return true si la eliminación fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean delete(Object pk) {
 		PreparedStatement ps = null;
@@ -69,6 +85,12 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 		return false;
 	}
 
+	/**
+     * Actualiza un fichaje en la base de datos.
+     *
+     * @param fich El objeto FichajeDTO que contiene los datos actualizados
+     * @return true si la actualización fue exitosa, false en caso contrario
+     */
 	@Override
 	public boolean update(FichajeDTO fich) {
 		PreparedStatement ps = null;
@@ -97,6 +119,12 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 		return false;
 	}
 
+	/**
+     * Lee un fichaje de la base de datos utilizando su clave primaria.
+     *
+     * @param pk La clave primaria del fichaje a leer
+     * @return Un objeto FichajeDTO representando el fichaje, o null si no se encontró
+     */
 	@Override
 	public FichajeDTO read(Object pk) {
 		FichajeDTO Fich = null;
@@ -116,6 +144,11 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 		return Fich;
 	}
 
+	/**
+     * Lee todos los fichajes de la base de datos.
+     *
+     * @return Una lista de objetos FichajeDTO representando todos los fichajes
+     */
 	@Override
 	public ArrayList<FichajeDTO> readAll() {
 		ArrayList<FichajeDTO> listaFich = new ArrayList<FichajeDTO>();
@@ -133,6 +166,12 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 		return listaFich;
 	}
 	
+	/**
+     * Lee todos los fichajes asociados a un personal específico.
+     *
+     * @param idPersonal El identificador del personal cuyas entradas se van a leer
+     * @return Una lista de objetos FichajeDTO asociados al personal
+     */
 	public ArrayList<FichajeDTO> readPer(int idPersonal) {
 		ArrayList<FichajeDTO> listaFich = new ArrayList<FichajeDTO>();
 		try {
@@ -150,6 +189,12 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 		return listaFich;
 	}
 	
+	/**
+     * Lee el fichaje del día actual para un personal específico.
+     *
+     * @param idPersonal El identificador del personal
+     * @return Un objeto FichajeDTO representando el fichaje del día actual, o null si no se encontró
+     */
 	public FichajeDTO readPerToday(int idPersonal) {
 	    FichajeDTO fich = null;
 	    try {
@@ -168,6 +213,12 @@ public class FichajeDAO implements Patron_DAO<FichajeDTO> {
 	    return fich;
 	}
 	
+	/**
+     * Lee todos los fichajes pasados para un personal específico.
+     *
+     * @param idPersonal El identificador del personal
+     * @return Una lista de objetos FichajeDTO representando los fichajes pasados
+     */
 	public ArrayList<FichajeDTO> readPastRecords(int idPersonal) {
 	    ArrayList<FichajeDTO> listaFich = new ArrayList<>();
 	    
