@@ -108,6 +108,8 @@ public class Principal extends JFrame {
 					} else {
 						Empleado ventana = new Empleado(usuario, true);
 						ventana.setVisible(true);
+						tfEmail.setText("");
+						pfContrasenia.setText("");
 					}
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

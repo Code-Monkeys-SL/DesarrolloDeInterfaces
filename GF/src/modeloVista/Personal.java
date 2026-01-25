@@ -14,8 +14,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
@@ -24,15 +27,24 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import conexionBD.ConexionSGL;
 import modeloBD_DAO.CategoriaDAO;
 import modeloBD_DAO.PersonalDAO;
 import modeloBD_DTO.CategoriaDTO;
 import modeloBD_DTO.FichajeDTO;
 import modeloBD_DTO.PersonalDTO;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JSpinner;
 
 public class Personal extends JDialog {
 
@@ -44,6 +56,7 @@ public class Personal extends JDialog {
 	private JTable table_Personal;
 	private JComboBox cbOrdenarTabla;
 	private JComboBox cbOrdenarTipo;
+	private JComboBox<Integer> cbEmp;
 
 	/**
 	 * Create the dialog.
@@ -85,7 +98,7 @@ public class Personal extends JDialog {
 		JPanel panel_user = new JPanel();
 		panel_user.setBackground(new Color(247, 244, 238));
 		panel_user.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Gesti\u00F3n de Usuarios", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_user.setBounds(21, 283, 429, 74);
+		panel_user.setBounds(21, 283, 429, 94);
 		TitledBorder border_user = (TitledBorder) panel_user.getBorder();
         border_user.setTitleFont(new Font("Tahoma", Font.PLAIN, 12));
 		contentPanel.add(panel_user);
@@ -104,6 +117,12 @@ public class Personal extends JDialog {
 		btnNuevoUsuario.setBackground(new Color(29, 46, 74));
 		btnNuevoUsuario.setBounds(10, 30, 94, 21);
 		panel_user.add(btnNuevoUsuario);
+		
+		cbEmp = new JComboBox();
+		cbEmp.setBounds(374, 62, 45, 22);
+		panel_user.add(cbEmp);
+		cargarEmpleados();
+		cbEmp.setSelectedIndex(0);
 		
 		JButton btnModificarUsuario = new JButton("Modificar");
 		btnModificarUsuario.addActionListener(new ActionListener() {
@@ -168,6 +187,73 @@ public class Personal extends JDialog {
 		btnVisualizar.setBackground(new Color(29, 46, 74));
 		btnVisualizar.setBounds(326, 31, 94, 21);
 		panel_user.add(btnVisualizar);
+		
+		JButton btnInformeGeneral = new JButton("Informe general");
+		btnInformeGeneral.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+				    InputStream reportStream = getClass().getResourceAsStream("/informes/HorasTrabajadas.jasper");
+				    
+				    if (reportStream == null) {
+				        JOptionPane.showMessageDialog(null, "No se encontró el archivo del reporte", "Error", JOptionPane.ERROR_MESSAGE);
+				        return;
+				    }
+				    
+				    JasperPrint jp = JasperFillManager.fillReport(reportStream, null, ConexionSGL.getInstancia().getCon());
+				    JasperViewer.viewReport(jp, false);
+				    
+				} catch (JRException ex) {
+				    JOptionPane.showMessageDialog(null, "Error al generar el reporte: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				    ex.printStackTrace();
+				}
+			}
+		});
+		btnInformeGeneral.setForeground(Color.WHITE);
+		btnInformeGeneral.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnInformeGeneral.setBackground(new Color(29, 46, 74));
+		btnInformeGeneral.setBounds(10, 62, 203, 21);
+		panel_user.add(btnInformeGeneral);
+		
+		JButton btnInformeEmp = new JButton("Informe");
+		btnInformeEmp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if ((int) cbEmp.getSelectedItem() == 0) {
+				    JOptionPane.showMessageDialog(null, "Selecciona un empleado");
+				    return;
+				}
+				
+				Map <String, Object> parametro = new HashMap();
+				parametro.put ("idPersonal", (int) cbEmp.getSelectedItem()); 
+
+		        
+				try {
+				    InputStream reportStream = getClass().getResourceAsStream("/informes/InformeEmpleado.jasper");
+				    
+				    if (reportStream == null) {
+				        JOptionPane.showMessageDialog(null, "No se encontró el archivo del reporte", "Error", JOptionPane.ERROR_MESSAGE);
+				        return;
+				    }
+				    
+				    JasperPrint jp = JasperFillManager.fillReport(reportStream, parametro, ConexionSGL.getInstancia().getCon());
+				    JasperViewer.viewReport(jp, false);
+				    
+				} catch (JRException ex) {
+				    JOptionPane.showMessageDialog(null, "Error al generar el reporte: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				    ex.printStackTrace();
+				}
+			}
+		});
+		btnInformeEmp.setForeground(Color.WHITE);
+		btnInformeEmp.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnInformeEmp.setBackground(new Color(29, 46, 74));
+		btnInformeEmp.setBounds(223, 63, 94, 21);
+		panel_user.add(btnInformeEmp);
+		
+		JLabel lblEmp = new JLabel("Empl.");
+		lblEmp.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblEmp.setBounds(336, 66, 38, 13);
+		panel_user.add(lblEmp);
 		
 		JPanel panel_category = new JPanel();
 		panel_category.setLayout(null);
@@ -314,5 +400,16 @@ public class Personal extends JDialog {
 	    }
 
 	    listaPersonal.sort(comparador);
+	}
+	
+	private void cargarEmpleados() {
+		ArrayList<PersonalDTO> listaPersonal = null;
+		listaPersonal = Opper.readAll();
+		
+		cbEmp.addItem(0);
+		for (PersonalDTO pers : listaPersonal ) {
+			cbEmp.addItem(pers.getIdPersonal());
+		}
+		
 	}
 }

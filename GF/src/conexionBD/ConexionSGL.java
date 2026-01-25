@@ -17,7 +17,7 @@ public class ConexionSGL {
 	private ConexionSGL () {
 		String host = "127.0.0.1"; // Host de la base de datos, también se puede usar "localhost
 		String user = "root"; // Usuario de la base de datos, cambiar si se utiliza un usuario diferente
-		String pass = "root"; // Contraseña de la base de datos, cambiar si se utiliza una contraseña diferente
+		String pass = ""; // Contraseña de la base de datos, cambiar si se utiliza una contraseña diferente
 		String dtbs = "cafeteria"; // Nombre de la base de datos a la que conectars
 		
 		try{
