@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HorasTrabajadas" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="13acf49e-4913-4d1b-bccc-113817ad15d1">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="src\informes\DataAdapter.jrdax"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="cafeteria"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
@@ -14,7 +14,7 @@
 		</conditionalStyle>
 	</style>
 	<queryString language="SQL">
-		<![CDATA[SELECT PERSONAL.id_personal, PERSONAL.NOMBRE, PERSONAL.APELLIDOS, categoria.nombre AS CATEGORIA, SUM(TIMESTAMPDIFF(HOUR, FICHAJE.fecha_inicial, FICHAJE.fecha_final)) AS total_horas FROM PERSONAL INNER JOIN FICHAJE ON PERSONAL.id_personal = FICHAJE.id_personal INNER JOIN categoria on personal.id_categoria = categoria.id_categoria where fichaje.accion = "Trabajo" GROUP BY PERSONAL.id_personal, PERSONAL.NOMBRE, PERSONAL.APELLIDOS;]]>
+		<![CDATA[SELECT Personal.id_personal, Personal.nombre, Personal.apellidos, Categoria.nombre AS CATEGORIA, SUM(TIMESTAMPDIFF(HOUR, Fichaje.fecha_inicial, Fichaje.fecha_final)) AS total_horas FROM Personal INNER JOIN Fichaje ON Personal.id_personal = Fichaje.id_personal INNER JOIN Categoria on Personal.id_categoria = Categoria.id_categoria where Fichaje.accion = "Trabajo" GROUP BY Personal.id_personal, Personal.nombre, Personal.apellidos;]]>
 	</queryString>
 	<field name="id_personal" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.name" value="id_personal"/>
