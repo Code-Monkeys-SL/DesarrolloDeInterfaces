@@ -56,7 +56,6 @@ public class Personal extends JDialog {
 	private JTable table_Personal;
 	private JComboBox cbOrdenarTabla;
 	private JComboBox cbOrdenarTipo;
-	private JComboBox<Integer> cbEmp;
 
 	/**
 	 * Create the dialog.
@@ -117,12 +116,6 @@ public class Personal extends JDialog {
 		btnNuevoUsuario.setBackground(new Color(29, 46, 74));
 		btnNuevoUsuario.setBounds(10, 30, 94, 21);
 		panel_user.add(btnNuevoUsuario);
-		
-		cbEmp = new JComboBox();
-		cbEmp.setBounds(374, 62, 45, 22);
-		panel_user.add(cbEmp);
-		cargarEmpleados();
-		cbEmp.setSelectedIndex(0);
 		
 		JButton btnModificarUsuario = new JButton("Modificar");
 		btnModificarUsuario.addActionListener(new ActionListener() {
@@ -218,13 +211,17 @@ public class Personal extends JDialog {
 		btnInformeEmp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if ((int) cbEmp.getSelectedItem() == 0) {
-				    JOptionPane.showMessageDialog(null, "Selecciona un empleado");
-				    return;
+				int seleccion = table_Personal.getSelectedRow();
+				int id = 0;
+				if (seleccion == -1) {
+					JOptionPane.showMessageDialog(null, "Por favor, selecciona un usuario para abrir informe", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				} else {
+					id = (int) table_Personal.getValueAt(seleccion, 0);
 				}
 				
 				Map <String, Object> parametro = new HashMap();
-				parametro.put ("idPersonal", (int) cbEmp.getSelectedItem()); 
+				parametro.put ("idPersonal", id); 
 
 		        
 				try {
@@ -247,13 +244,8 @@ public class Personal extends JDialog {
 		btnInformeEmp.setForeground(Color.WHITE);
 		btnInformeEmp.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnInformeEmp.setBackground(new Color(29, 46, 74));
-		btnInformeEmp.setBounds(223, 63, 94, 21);
+		btnInformeEmp.setBounds(223, 63, 197, 21);
 		panel_user.add(btnInformeEmp);
-		
-		JLabel lblEmp = new JLabel("Empl.");
-		lblEmp.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblEmp.setBounds(336, 66, 38, 13);
-		panel_user.add(lblEmp);
 		
 		JPanel panel_category = new JPanel();
 		panel_category.setLayout(null);
@@ -400,16 +392,5 @@ public class Personal extends JDialog {
 	    }
 
 	    listaPersonal.sort(comparador);
-	}
-	
-	private void cargarEmpleados() {
-		ArrayList<PersonalDTO> listaPersonal = null;
-		listaPersonal = Opper.readAll();
-		
-		cbEmp.addItem(0);
-		for (PersonalDTO pers : listaPersonal ) {
-			cbEmp.addItem(pers.getIdPersonal());
-		}
-		
 	}
 }
