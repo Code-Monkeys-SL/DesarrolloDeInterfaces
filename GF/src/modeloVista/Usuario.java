@@ -43,6 +43,7 @@ public class Usuario extends JDialog {
 	private JCheckBox ckAdmin;
 	private JComboBox cbCategoria;
 	private JButton actionButton;
+	private JLabel lblAccionUser;
 
 	/**
 	 * Create the dialog.
@@ -58,7 +59,7 @@ public class Usuario extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			JLabel lblAccionUser = new JLabel("Action User");
+			lblAccionUser = new JLabel("Nuevo Usuario");
 			lblAccionUser.setOpaque(true);
 			lblAccionUser.setHorizontalAlignment(SwingConstants.CENTER);
 			lblAccionUser.setForeground(Color.WHITE);
@@ -256,6 +257,7 @@ public class Usuario extends JDialog {
 	public Usuario(PersonalDTO usuario) {
 	    this();
 	    actionButton.setText("Modificar Usuario");
+	    lblAccionUser.setText("Editar Usuario");
 
 	    tfId.setText(usuario.getIdPersonal()+"");
 	    tfNombre.setText(usuario.getNombre());
